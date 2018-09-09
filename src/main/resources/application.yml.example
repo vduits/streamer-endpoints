@@ -1,0 +1,12 @@
+rest:
+  api: api/v1
+
+
+twitch:
+  client-id: 
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/streamerendpoints
+    username: 
+    password: 
