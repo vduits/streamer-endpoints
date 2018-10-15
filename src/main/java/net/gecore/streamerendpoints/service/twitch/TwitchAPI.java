@@ -7,26 +7,45 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
-import org.springframework.beans.factory.annotation.Value;
+import net.gecore.streamerendpoints.configuration.TwitchConfiguration;
+import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TwitchAPI {
 
-  @Value("${twitch.client-id:}")
-  private String clientId;
+  private TwitchConfiguration twitchConfiguration;
   private static String CLIENTIDHEADER = "Client-ID";
+  private static String TWITCHAPI = "https://api.twitch.tv/";
+  private static String LOGINPARAMETER = "?login=";
+  private static String FOLLOWSPARAMETER = "/follows?";
+  private static String TOID = "to_id=";
+  private static String FROMID = "from_id=";
 
+  private static String JPATHLOGINDATA = "$.data[0].id";
+  private static String JPATHFOLLOWERDATE = "$.data[0].followed_at";
 
-  public String request(String urlParams) {
-    String result = "whoops";
-    String response = "";
+  @Autowired
+  public TwitchAPI(TwitchConfiguration twitchConfiguration) {
+    this.twitchConfiguration = twitchConfiguration;
+  }
+
+  public String request(Endpoint endpoint, String urlParams) {
     URL url;
     HttpsURLConnection con;
-
     try {
-      url = new URL("https://twitch.com/" + urlParams);
+      url = new URL(
+          TWITCHAPI
+              + twitchConfiguration.getApiVersion()
+              + "/"
+              + endpoint.name()
+              + urlParams);
       con = (HttpsURLConnection) url.openConnection();
+      con.setConnectTimeout(5000);
+      con.setReadTimeout(5000);
       con.setRequestMethod("GET");
-      con.setRequestProperty(CLIENTIDHEADER, clientId);
+      con.setRequestProperty(CLIENTIDHEADER, twitchConfiguration.getClientId());
     } catch (MalformedURLException me) {
       return "Url format is messed up";
     } catch (ProtocolException pe) {
@@ -34,72 +53,29 @@ public class TwitchAPI {
     } catch (IOException io) {
       return "Sorry twitch is complaining";
     }
-
+    StringBuffer content = new StringBuffer();
     try {
-      BufferedReader br =
-          new BufferedReader(
-              new InputStreamReader(con.getInputStream()));
+      BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
       String input;
-
       while ((input = br.readLine()) != null) {
-        response = response + input;
-        System.out.println(input);
+        content.append(input);
       }
       br.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    return result;
+    con.disconnect();
+    return content.toString();
+  }
+  public String retrieveFollowAge(int followerId, int streamerId) {
+    String urlBuildUp = FOLLOWSPARAMETER+TOID+streamerId+"&"+FROMID+followerId;
+    String response = request(Endpoint.users, urlBuildUp);
+    return JsonPathUtils.retrieveInformation(response, JPATHFOLLOWERDATE);
   }
 
-
-  public String retrieveFollowAge(int followerId, int followedId) {
-    // todo turn two ids into a request for the urlparams
-    //https://api.twitch.tv/helix/users/follows?to_id=44566682&from_id=62013306
-  /*
-    {
-    "total": 1,
-    "data": [
-        {
-            "from_id": "62013306",
-            "to_id": "44566682",
-            "followed_at": "2016-11-18T16:59:30Z"
-        }
-    ],
-    "pagination": {
-        "cursor": "eyJiIjpudWxsLCJhIjoiIn0"
-    }
-    }
-   */
-    String result = "";
-
-    return result;
-  }
-
-  public int retrieveUserFromName(String userName) {
-    //todo method that checks an username for an id.
-    //https://api.twitch.tv/helix/users?login=KathoriasTV
-  /* example result
-  {
-    "data": [
-        {
-            "id": "110473115",
-            "login": "kathoriastv",
-            "display_name": "KathoriasTV",
-            "type": "",
-            "broadcaster_type": "",
-            "description": "",
-            "profile_image_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/48411c5f-95a6-44cf-9e5d-100830f7d37f-profile_image-300x300.png",
-            "offline_image_url": "",
-            "view_count": 137
-        }
-    ]
-  }
-
-   */
-
-    return 0;
+  public String retrieveUserFromName(String userName) {
+    String response  = request(Endpoint.users, LOGINPARAMETER +userName);
+    return JsonPathUtils.retrieveInformation(response, JPATHLOGINDATA);
   }
 
 }
