@@ -36,7 +36,7 @@ public class FollowAgeController {
     String followerIdString = twitchAPI.retrieveUserFromName(followerId);
     int followerIdInteger = 0;
     try{
-      followerIdInteger = Integer.valueOf(followerIdString) ;
+      followerIdInteger = Integer.parseInt(followerIdString) ;
     }catch (NumberFormatException ne){
       System.out.println(ne.getMessage());
     }
@@ -47,7 +47,7 @@ public class FollowAgeController {
       }else{
         int streamerIdInteger;
         try{
-          streamerIdInteger = Integer.valueOf(twitchAPI.retrieveUserFromName(streamerId));
+          streamerIdInteger = Integer.parseInt(twitchAPI.retrieveUserFromName(streamerId));
         }catch (NumberFormatException ne){
           System.out.println(ne.getMessage());
           return "Cannot find the streamer there";

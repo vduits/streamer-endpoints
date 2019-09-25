@@ -22,8 +22,7 @@ public class QuoteParser {
     for(String toCheckString : splitString){
         listOfStrings.add(escapeImportantShit(toCheckString));
     }
-    String result = String.join("",listOfStrings);
-    return result;
+    return String.join("",listOfStrings);
   }
 
   private String escapeImportantShit(String input) {

@@ -9,26 +9,13 @@ import net.gecore.streamerendpoints.processing.QuoteParser;
 @SpringBootApplication
 public class StreamerEndpointsApplication implements CommandLineRunner {
 
-  @Autowired
-  DbTest dbTest;
-
-  @Autowired
-  QuoteParser parser;
-
   public static void main(String[] args) {
     SpringApplication.run(StreamerEndpointsApplication.class, args);
-
   }
 
   @Override
   public void run(String... args) throws Exception {
-    System.out.println("IzoLate Now Enabled");
+    System.out.println("Streamer Endpoints Now Enabled");
   }
-
-  //TODO
-  //RINFO ->
-  //Quote
-  // streamerendpoints we need to get the ACTUAL quotations fixed.
-  //randomquote
 
 }
