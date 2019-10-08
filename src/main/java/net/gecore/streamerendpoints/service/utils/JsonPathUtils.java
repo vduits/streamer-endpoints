@@ -7,14 +7,16 @@ import com.jayway.jsonpath.ReadContext;
 public class JsonPathUtils {
 
   public static String badResult = "Sorry things can't work out, it's you not me.";
+
   public static String retrieveInformation(String content, String partToFind){
-    String result;
-    ReadContext context = JsonPath.parse(content);
     try{
-      result= context.read(partToFind);
+      ReadContext context = JsonPath.parse(content);
+      return context.read(partToFind);
     }catch(PathNotFoundException pnf){
-      result = badResult;
+      System.out.println("Encountered an error while parsing: " +content);
+      pnf.printStackTrace();
+      return badResult;
     }
-    return result;
   }
+
 }
