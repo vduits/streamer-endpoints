@@ -26,8 +26,6 @@ public class FollowAgeController {
     this.twitchAPI = twitchAPI;
   }
 
-
-
   //todo one that just grabs from a given integer/id
   @GetMapping(value = "/{followerId}/following/{streamerId}")
   public String retrieveAgeById(@PathVariable String followerId, @PathVariable String streamerId){
