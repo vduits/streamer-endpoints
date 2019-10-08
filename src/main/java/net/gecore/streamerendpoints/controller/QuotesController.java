@@ -1,4 +1,4 @@
-package net.gecore.streamerendpoints.service.rest;
+package net.gecore.streamerendpoints.controller;
 
 import java.util.List;
 import java.util.Random;

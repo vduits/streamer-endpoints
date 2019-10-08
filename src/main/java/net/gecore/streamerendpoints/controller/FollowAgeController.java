@@ -1,4 +1,4 @@
-package net.gecore.streamerendpoints.service.rest;
+package net.gecore.streamerendpoints.controller;
 
 import net.gecore.streamerendpoints.service.twitch.TwitchAPI;
 import net.gecore.streamerendpoints.service.utils.FollowAgeUtil;
