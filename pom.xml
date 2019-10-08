@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.gecore</groupId>
-  <artifactId>streamerendpoints</artifactId>
+  <artifactId>streamer-endpoints</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>quotes</name>
+  <name>streamer-endpoints</name>
   <description>You&#39;re a demo project</description>
 
   <parent>
