@@ -31,7 +31,13 @@ public class TwitchAPI {
     this.twitchConfiguration = twitchConfiguration;
   }
 
-  public String request(Endpoint endpoint, String urlParams) {
+  public String request(Endpoint endpoint, String urlParams) throws TwitchAPIException{
+    HttpsURLConnection con = buildConnection(endpoint, urlParams);
+    return readResponse(con);
+  }
+
+  private HttpsURLConnection buildConnection(Endpoint endpoint, String urlParams)
+      throws  TwitchAPIException{
     URL url;
     HttpsURLConnection con;
     try {
@@ -47,13 +53,17 @@ public class TwitchAPI {
       con.setRequestMethod("GET");
       con.setRequestProperty(CLIENTIDHEADER, twitchConfiguration.getClientId());
     } catch (MalformedURLException me) {
-      return "Url format is messed up";
+      throw new TwitchAPIException("Url format is messed up");
     } catch (ProtocolException pe) {
-      return "Sorry connection is complaining";
+      throw new TwitchAPIException("Sorry connection is complaining");
     } catch (IOException io) {
-      return "Sorry twitch is complaining";
+      throw new TwitchAPIException("Sorry twitch is complaining");
     }
-    StringBuffer content = new StringBuffer();
+    return con;
+  }
+
+  private String readResponse(HttpsURLConnection con){
+    StringBuilder content = new StringBuilder();
     try {
       BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
       String input;
@@ -67,13 +77,14 @@ public class TwitchAPI {
     con.disconnect();
     return content.toString();
   }
-  public String retrieveFollowAge(int followerId, int streamerId) {
+
+  public String retrieveFollowAge(int followerId, int streamerId) throws TwitchAPIException{
     String urlBuildUp = FOLLOWSPARAMETER+TOID+streamerId+"&"+FROMID+followerId;
     String response = request(Endpoint.users, urlBuildUp);
     return JsonPathUtils.retrieveInformation(response, JPATHFOLLOWERDATE);
   }
 
-  public String retrieveUserFromName(String userName) {
+  public String retrieveUserFromName(String userName) throws TwitchAPIException{
     String response  = request(Endpoint.users, LOGINPARAMETER +userName);
     return JsonPathUtils.retrieveInformation(response, JPATHLOGINDATA);
   }
