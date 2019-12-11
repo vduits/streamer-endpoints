@@ -1,5 +1,6 @@
 package net.gecore.streamerendpoints.service.twitch;
 
+import net.gecore.streamerendpoints.configuration.TwitchUserConfiguration;
 import net.gecore.streamerendpoints.service.utils.FollowAgeUtil;
 import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
 import org.springframework.stereotype.Component;
@@ -7,14 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class FollowAgeService {
 
-  private static final String IZOIDSTRING = "44566682";
-  private static final int IZOID = 44566682;
+  private final String IZOIDSTRING;
+  private final int IZOID;
   private static final String NOPE = "NOPE";
 
   private TwitchAPI twitchAPI;
 
-  public FollowAgeService(TwitchAPI twitchAPI){
+  public FollowAgeService(TwitchAPI twitchAPI, TwitchUserConfiguration userConfiguration){
     this.twitchAPI = twitchAPI;
+    IZOID = userConfiguration.getUserId();
+    IZOIDSTRING = String.valueOf(IZOID);
+
   }
   //todo add streamer configuration to be able to remove izoid
 
