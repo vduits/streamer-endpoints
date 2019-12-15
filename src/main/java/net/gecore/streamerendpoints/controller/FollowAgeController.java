@@ -8,6 +8,7 @@ import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import net.gecore.streamerendpoints.processing.QuoteParser;
@@ -23,11 +24,12 @@ public class FollowAgeController {
     this.followAgeService = followAgeService;
   }
 
-  //todo one that just grabs from a given integer/id
-  @GetMapping(value = "/{followerId}/following/{streamerId}")
-  public String retrieveAgeById(@PathVariable String followerId, @PathVariable String streamerId){
+  //todo check if nightbot source is discord/twitch to allow different parsing.
+  @GetMapping(value = "/{firstUser}/following/{secondUser}")
+  public String retrieveAgeById(@PathVariable String firstUser, @PathVariable String secondUser,
+      @RequestHeader(value = "Nightbot-User", required = false) String nightBotData){
     try{
-      return this.followAgeService.retrieveFollowAge(followerId, streamerId);
+      return this.followAgeService.retrieveFollowAge(firstUser, secondUser);
     }catch (TwitchAPIException twe){
       return twe.getMessage();
     }

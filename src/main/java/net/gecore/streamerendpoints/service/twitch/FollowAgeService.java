@@ -1,65 +1,50 @@
 package net.gecore.streamerendpoints.service.twitch;
 
-import net.gecore.streamerendpoints.configuration.TwitchUserConfiguration;
+import net.gecore.streamerendpoints.configuration.TwitchConfiguration;
 import net.gecore.streamerendpoints.service.utils.FollowAgeUtil;
 import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FollowAgeService {
 
-  private final String IZOIDSTRING;
-  private final int IZOID;
-  private static final String NOPE = "NOPE";
+  private final String CONFIGUREDUSERSTRING;
+  private final long CONFIGUREDUSER;
 
   private TwitchAPI twitchAPI;
+  private Logger LOGGER = LoggerFactory.getLogger(FollowAgeService.class);
 
-  public FollowAgeService(TwitchAPI twitchAPI, TwitchUserConfiguration userConfiguration){
+  public FollowAgeService(TwitchAPI twitchAPI, TwitchConfiguration twitchConfiguration) {
     this.twitchAPI = twitchAPI;
-    IZOID = userConfiguration.getUserId();
-    IZOIDSTRING = String.valueOf(IZOID);
-
-  }
-  //todo add streamer configuration to be able to remove izoid
-
-  public String retrieveFollowAge(String followerId, String streamerId) throws TwitchAPIException{
-    String followAge = "Sorry can't help you";
-    String followerIdString = twitchAPI.retrieveUserFromName(followerId);
-    int followerIdInteger = stringToInt(followerIdString);
-    String resultedDate = NOPE;
-    if(followerIdInteger != 0){
-      if(streamerId.equals(IZOIDSTRING)){
-        resultedDate = twitchAPI.retrieveFollowAge(followerIdInteger,IZOID);
-      }else{
-        int streamerIdInteger;
-        try{
-          streamerIdInteger = Integer.parseInt(twitchAPI.retrieveUserFromName(streamerId));
-        }catch (NumberFormatException ne){
-          System.out.println(ne.getMessage());
-          return "Cannot find the streamer there";
-        }
-        resultedDate = twitchAPI.retrieveFollowAge(followerIdInteger,streamerIdInteger);
-      }
-    }else{
-      return "Sorry can't find the user following";
-    }
-
-    //cheapo check
-    if(!resultedDate.equals(JsonPathUtils.badResult) && !resultedDate.equals(NOPE)){
-      return FollowAgeUtil.calculate(resultedDate);
-    }
-    return followAge;
+    CONFIGUREDUSER = twitchConfiguration.getConfiguredUser();
+    CONFIGUREDUSERSTRING = String.valueOf(CONFIGUREDUSER);
   }
 
-  private int stringToInt(String followerIdString){
-    try{
-      return Integer.parseInt(followerIdString) ;
-    }catch (NumberFormatException ne){
-      System.out.println(ne.getMessage());
+  public String retrieveFollowAge(String firstUser, String secondUser) throws TwitchAPIException {
+    long firstUserId = retrieveUserFromString(firstUser);
+    long secondUserId = retrieveUserFromString(secondUser);
+    String fetchedDate = twitchAPI.retrieveFollowAge(firstUserId, secondUserId);
+    if (!fetchedDate.equals(JsonPathUtils.badResult)) {
+      return FollowAgeUtil.calculate(fetchedDate);
     }
-    return 0;
+    return "Sorry can't help you";
   }
 
-
+  /**
+   * Checks if the user is the same as the configured user and returns the correct Twitch User Id.
+   * This saves an additional twitch API call if it matches the configured user.
+   *
+   * @param user String containing name of user;
+   * @return long twitch id of user;
+   */
+  public long retrieveUserFromString(String user) throws TwitchAPIException {
+    if (user.equals(CONFIGUREDUSERSTRING)) {
+      return CONFIGUREDUSER;
+    } else {
+      return twitchAPI.retrieveUserIdFromName(user);
+    }
+  }
 
 }

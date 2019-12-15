@@ -9,6 +9,8 @@ public class TwitchConfiguration {
 
   private String clientId;
   private String apiVersion;
+  private int rateLimitThreshold;
+  private long configuredUser;
 
   public String getClientId() {
     return clientId;
@@ -24,5 +26,21 @@ public class TwitchConfiguration {
 
   public void setApiVersion(String apiVersion) {
     this.apiVersion = apiVersion;
+  }
+
+  public int getRateLimitThreshold() {
+    return rateLimitThreshold;
+  }
+
+  public void setRateLimitThreshold(int rateLimitThreshold) {
+    this.rateLimitThreshold = rateLimitThreshold;
+  }
+
+  public long getConfiguredUser() {
+    return configuredUser;
+  }
+
+  public void setConfiguredUser(long configuredUser) {
+    this.configuredUser = configuredUser;
   }
 }
