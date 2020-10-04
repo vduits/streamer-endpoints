@@ -1,6 +1,7 @@
 package net.gecore.streamerendpoints.controller;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,9 +41,12 @@ public class QuotesController {
   @GetMapping(value= "/{quoteId}/quote")
   public String retrieveQuote(@PathVariable Integer quoteId){
     Quote retrievedQuote = quoteDao.retrieveQuoteById(quoteId);
-    String thatQuote = quoteParser.unEscapeImportantShit(retrievedQuote.getId()+": "+retrievedQuote.getQuote());
-    // return quoteDao.retrieveQuoteById(quoteId).getQuote();
-    return thatQuote;
+    if(Objects.nonNull(retrievedQuote)) {
+      return quoteParser
+          .unEscapeImportantShit(retrievedQuote.getId() + ": " + retrievedQuote.getQuote());
+    }else{
+      return "quote does not exist (anymore)";
+    }
   }
 
   @GetMapping(value= "/random")
