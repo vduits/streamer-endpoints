@@ -3,9 +3,9 @@ rest:
 
 twitch:
   client-id:
+  client-secret:
   api-version: helix
   rate-limit-threshold: 5
-  configured-user:
 
 spring:
   datasource:

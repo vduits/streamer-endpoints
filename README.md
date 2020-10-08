@@ -19,7 +19,7 @@ Allows you to add a quote with a string as body. Responds with a new quote-id.
 
 #### FollowAge
 * `GET /followage/{firstUser}/following/{secondUser}`
-By supplying twitch usernames this endpoint will calculate the amount of time 
+By supplying twitch usernames this twitchEndpoint will calculate the amount of time 
 the first user that is supplied has been following the second user.
 
 ### Development
@@ -33,11 +33,8 @@ This section contains everything to run the application.
 
 #### Getting Started
 An `application.yaml.example` has been provided to create your own `application.yaml`.  
-Most notably, under twitch, `client-id` has to be set by [creating an application at Twitch](https://dev.twitch.tv/console/apps).  
+Most notably, under twitch, `client-id` and `client-secret` has to be set by [creating an application at Twitch](https://dev.twitch.tv/console/apps).  
 
-Secondarily a `configured-user` can be set. This is the twitch user-id retrievable by the api. 
-This id reduces lookups done on the second user, often enough the streamer that the application is running for.
-When calling the FollowAge endpoint using this id in the `{secondUser}`, it will skip the twitch-api lookup for it.
 
 #### Docker
 A docker-compose.yml has been provided at the root of the repository.
