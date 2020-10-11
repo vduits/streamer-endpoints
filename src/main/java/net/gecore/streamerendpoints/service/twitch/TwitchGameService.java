@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 
 @Component
-public class GameService {
+public class TwitchGameService {
     private final TwitchAPI twitchAPI;
     private final TwitchConfig twitchConfig;
     private final AuthService authService;
     private final Logger LOGGER = LoggerFactory.getLogger(StreamService.class);
 
-    public GameService(TwitchAPI twitchAPI, AuthService authService, TwitchConfig twitchConfig) {
+    public TwitchGameService(TwitchAPI twitchAPI, AuthService authService, TwitchConfig twitchConfig) {
         this.twitchAPI = twitchAPI;
         this.authService = authService;
         this.twitchConfig = twitchConfig;

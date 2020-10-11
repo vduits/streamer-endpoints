@@ -18,14 +18,14 @@ public class StreamService {
     private final TwitchAPI twitchAPI;
     private final TwitchConfig twitchConfig;
     private final AuthService authService;
-    private final GameService gameService;
+    private final TwitchGameService twitchGameService;
     private final Logger LOGGER = LoggerFactory.getLogger(StreamService.class);
 
     public StreamService(TwitchAPI twitchAPI, AuthService authService,
-                        GameService gameService, TwitchConfig twitchConfig) {
+                        TwitchGameService twitchGameService, TwitchConfig twitchConfig) {
         this.twitchAPI = twitchAPI;
         this.authService = authService;
-        this.gameService = gameService;
+        this.twitchGameService = twitchGameService;
         this.twitchConfig = twitchConfig;
     }
 
@@ -33,7 +33,7 @@ public class StreamService {
         var response = retrieveStreamByUserId(userId);
         final String jsonNode = "$.data[0].game_id";
         long gameId = Long.parseLong(JsonPathUtils.retrieveString(response, jsonNode));
-        return gameService.retrieveGameById(gameId);
+        return twitchGameService.retrieveGameById(gameId);
     }
 
     public String retrieveStreamByUserId(long userId) throws TwitchAPIException {
