@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties("twitch")
-public class TwitchConfiguration {
+public class TwitchConfig {
 
   private String clientId;
   private String clientSecret;

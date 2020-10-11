@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import net.gecore.streamerendpoints.configuration.TwitchConfiguration;
+import net.gecore.streamerendpoints.configuration.TwitchConfig;
 import net.gecore.streamerendpoints.service.twitch.component.RateLimit;
 import net.gecore.streamerendpoints.service.twitch.component.RateLimitHelper;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class RateLimitService {
    */
 
   @Autowired
-  public RateLimitService(TwitchConfiguration configuration) {
+  public RateLimitService(TwitchConfig configuration) {
     this.threshold = configuration.getRateLimitThreshold();
     this.currentRateLimit = new RateLimit(DEFAULT_LIMIT - threshold, Instant.now());
   }

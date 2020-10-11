@@ -1,12 +1,12 @@
 package net.gecore.streamerendpoints.domain;
 
-public class Game {
+public class TwitchGame {
     private long id;
     private String name;
 
-    public Game() {}
+    public TwitchGame() {}
 
-    public Game(long id, String name) {
+    public TwitchGame(long id, String name) {
         this.id = id;
         this.name = name;
     }

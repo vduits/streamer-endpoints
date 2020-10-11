@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import net.gecore.streamerendpoints.configuration.TwitchConfiguration;
+import net.gecore.streamerendpoints.configuration.TwitchConfig;
 import net.gecore.streamerendpoints.service.twitch.component.TwitchToken;
 import net.gecore.streamerendpoints.service.twitch.constants.GrantType;
 import net.gecore.streamerendpoints.service.twitch.constants.OAuthEndpoint;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class AuthService {
 
   private static final String OAUTH_TWITCH = "https://id.twitch.tv/oauth2/";
-  private final TwitchConfiguration configuration;
+  private final TwitchConfig configuration;
   private static final String URL_ERROR = "The server has trouble learning how to write urls";
   private static final Map<String, String> NO_HEADERS = new HashMap<>();
   private final TwitchAPI twitchAPI;
@@ -29,7 +29,7 @@ public class AuthService {
 
   private final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
 
-  public AuthService(TwitchAPI twitchAPI, TwitchConfiguration configuration) {
+  public AuthService(TwitchAPI twitchAPI, TwitchConfig configuration) {
     this.twitchAPI = twitchAPI;
     this.configuration = configuration;
   }
