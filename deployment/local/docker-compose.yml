@@ -1,0 +1,14 @@
+version: '3.7'
+
+volumes: 
+  db-data-local:
+services:
+  db:
+    image: mariadb
+    #restart: always
+    ports:
+      - "3306:3306"
+    volumes: 
+      - db-data-local:/var/lib/mysql
+    environment: 
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
