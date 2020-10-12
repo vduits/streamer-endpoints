@@ -1,0 +1,23 @@
+version: '3.7'
+
+volumes: 
+  db-data-prod:
+services:
+  app:
+    build: 
+      context: ../../
+      dockerfile: Dockerfile 
+    environment: 
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+  db:
+    image: mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes: 
+      - db-data-prod:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+
