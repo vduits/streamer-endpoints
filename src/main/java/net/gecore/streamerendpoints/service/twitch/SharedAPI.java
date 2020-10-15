@@ -48,9 +48,9 @@ public class SharedAPI {
         }
     }
 
-    public ResponseAPI readResponse(HttpsURLConnection con){
+    public APIData readResponse(HttpsURLConnection con){
         StringBuilder content = new StringBuilder();
-        ResponseAPI rAPI;
+        APIData rAPI;
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
@@ -63,7 +63,7 @@ public class SharedAPI {
             e.printStackTrace();
         }
         con.disconnect();
-        rAPI = new ResponseAPI(con.getHeaderFields(), content);
+        rAPI = new APIData(con.getHeaderFields(), content);
         return rAPI;
     }
 }

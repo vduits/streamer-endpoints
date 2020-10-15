@@ -26,7 +26,7 @@ public class TwitchAPI {
       throws TwitchAPIException{
     if(ratelimitService.canPerformRequest()){
       HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-      ResponseAPI response = sAPI.readResponse(con);
+      APIData response = sAPI.readResponse(con);
       ratelimitService.updateRateLimit(response.getHeaders());
       return response.getBody();
     }else{
@@ -43,7 +43,7 @@ public class TwitchAPI {
   public String directRequest(URL url, HttpMethod httpMethod, Map<String, String> headers)
       throws TwitchAPIException {
     HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-    ResponseAPI response =  sAPI.readResponse(con);
+    APIData response =  sAPI.readResponse(con);
     return response.getBody();
   }
 
