@@ -4,10 +4,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import javax.net.ssl.HttpsURLConnection;
-import net.gecore.streamerendpoints.service.twitch.SharedAPI;
 import net.gecore.streamerendpoints.service.twitch.component.RateLimit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -17,21 +14,21 @@ public class TwitchAPI {
 
   private final RateLimitService ratelimitService;
 
-//  private final Logger LOGGER = LoggerFactory.getLogger(TwitchAPI.class);
-
   private final SharedAPI sAPI;
 
   @Autowired
-  public TwitchAPI(RateLimitService ratelimitService){
+  public TwitchAPI(RateLimitService ratelimitService, SharedAPI sAPI){
     this.ratelimitService = ratelimitService;
-    sAPI = new SharedAPI();
+    this.sAPI = sAPI;
   }
 
   public String request(URL url, HttpMethod httpMethod, Map<String, String> headers)
       throws TwitchAPIException{
     if(ratelimitService.canPerformRequest()){
       HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-      return sAPI.readResponse(con, true);
+      ResponseAPI response = sAPI.readResponse(con);
+      ratelimitService.updateRateLimit(response.getHeaders());
+      return response.getBody();
     }else{
       Optional<RateLimit> rateLimit = ratelimitService.returnRateLimit();
       if(rateLimit.isPresent()){
@@ -46,7 +43,8 @@ public class TwitchAPI {
   public String directRequest(URL url, HttpMethod httpMethod, Map<String, String> headers)
       throws TwitchAPIException {
     HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-    return sAPI.readResponse(con, false);
+    ResponseAPI response =  sAPI.readResponse(con);
+    return response.getBody();
   }
 
 }
