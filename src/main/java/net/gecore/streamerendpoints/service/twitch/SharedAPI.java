@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Map;
+import net.gecore.streamerendpoints.service.twitch.component.ApiReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -17,12 +18,8 @@ public class SharedAPI {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SharedAPI.class);
 
-    public SharedAPI(){
-
-    }
-
     public HttpsURLConnection buildConnection(URL url, HttpMethod httpMethod,
-                                               Map<String, String> headers) throws  TwitchAPIException{
+        Map<String, String> headers) throws  TwitchAPIException{
         HttpsURLConnection conn;
         try {
             conn = (HttpsURLConnection) url.openConnection();
@@ -48,9 +45,8 @@ public class SharedAPI {
         }
     }
 
-    public APIData readResponse(HttpsURLConnection con){
+    public ApiReply readResponse(HttpsURLConnection con){
         StringBuilder content = new StringBuilder();
-        APIData rAPI;
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
@@ -63,7 +59,6 @@ public class SharedAPI {
             e.printStackTrace();
         }
         con.disconnect();
-        rAPI = new APIData(con.getHeaderFields(), content);
-        return rAPI;
+        return new ApiReply(con.getHeaderFields(), content);
     }
 }

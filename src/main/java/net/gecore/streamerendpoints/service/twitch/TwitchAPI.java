@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import javax.net.ssl.HttpsURLConnection;
+import net.gecore.streamerendpoints.service.twitch.component.ApiReply;
 import net.gecore.streamerendpoints.service.twitch.component.RateLimit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -26,7 +27,7 @@ public class TwitchAPI {
       throws TwitchAPIException{
     if(ratelimitService.canPerformRequest()){
       HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-      APIData response = sAPI.readResponse(con);
+      ApiReply response = sAPI.readResponse(con);
       ratelimitService.updateRateLimit(response.getHeaders());
       return response.getBody();
     }else{
@@ -43,7 +44,7 @@ public class TwitchAPI {
   public String directRequest(URL url, HttpMethod httpMethod, Map<String, String> headers)
       throws TwitchAPIException {
     HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-    APIData response =  sAPI.readResponse(con);
+    ApiReply response =  sAPI.readResponse(con);
     return response.getBody();
   }
 
