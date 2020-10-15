@@ -9,18 +9,14 @@ import java.net.URL;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SharedAPI {
 
-    //private final CommonRateLimitService rateLimitService;
-
     private final Logger LOGGER = LoggerFactory.getLogger(SharedAPI.class);
 
-    @Autowired
     public SharedAPI(){
 
     }
@@ -52,13 +48,12 @@ public class SharedAPI {
         }
     }
 
-    public String readResponse(HttpsURLConnection con, boolean updateRateLimit){
+    public ResponseAPI readResponse(HttpsURLConnection con){
         StringBuilder content = new StringBuilder();
+        ResponseAPI rAPI;
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//            if(updateRateLimit){
-//                ratelimitService.updateRateLimit(con.getHeaderFields());
-//            }
+
             String input;
             while ((input = br.readLine()) != null) {
                 content.append(input);
@@ -68,6 +63,7 @@ public class SharedAPI {
             e.printStackTrace();
         }
         con.disconnect();
-        return content.toString();
+        rAPI = new ResponseAPI(con.getHeaderFields(), content);
+        return rAPI;
     }
 }
