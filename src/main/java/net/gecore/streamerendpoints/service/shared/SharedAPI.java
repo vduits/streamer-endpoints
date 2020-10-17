@@ -45,19 +45,19 @@ public class SharedAPI {
                                                   Map<String, String> headers) throws SharedApiException {
         HttpsURLConnection conn;
         try {
-//
-//            conn = (HttpsURLConnection) url.openConnection();
-//            conn.setConnectTimeout(5000);
-//            conn.setReadTimeout(5000);
-//            conn.setRequestMethod(HttpMethod.POST.name());
-//            if(!headers.isEmpty()){
-//                addHeaders(conn, headers);
-//            }
-//            conn.setDoOutput(true);
-//            conn.setRequestProperty("Content-Type", "text/plain");
-//            var outputStream = conn.getOutputStream();
-//            outputStream.write(body);
-//            outputStream.close();
+
+            conn = (HttpsURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            conn.setRequestMethod(HttpMethod.POST.name());
+            if(!headers.isEmpty()){
+                addHeaders(conn, headers);
+            }
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "text/plain");
+            var outputStream = conn.getOutputStream();
+            outputStream.write(body);
+            outputStream.close();
 
         } catch (ProtocolException pe) {
             LOGGER.error(pe.getMessage());
