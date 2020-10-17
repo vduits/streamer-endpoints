@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import net.gecore.streamerendpoints.configuration.TwitchConfig;
+import net.gecore.streamerendpoints.service.shared.SharedApiException;
 import net.gecore.streamerendpoints.service.twitch.component.TwitchToken;
 import net.gecore.streamerendpoints.service.twitch.constants.GrantType;
 import net.gecore.streamerendpoints.service.twitch.constants.OAuthEndpoint;
@@ -56,10 +57,16 @@ public class AuthService {
 
   public void retrieveAuthToken() throws TwitchAPIException {
     URL url = createAuthRequestUrl(createAuthParams());
-    String response = twitchAPI.directRequest(url, HttpMethod.POST, NO_HEADERS);
-    String token = JsonPathUtils.retrieveString(response, "$.access_token");
-    int expiry = JsonPathUtils.retrieveInt(response, "$.expires_in");
-    this.twitchToken = new TwitchToken(token, expiry);
+    try{
+      String response = twitchAPI.directRequest(url, HttpMethod.POST, NO_HEADERS);
+      String token = JsonPathUtils.retrieveString(response, "$.access_token");
+      int expiry = JsonPathUtils.retrieveInt(response, "$.expires_in");
+      this.twitchToken = new TwitchToken(token, expiry);
+    }catch(SharedApiException sae){
+      LOGGER.error(sae.getMessage());
+      throw new TwitchAPIException("An issue has risen when trying to authenticate with twitch");
+    }
+
   }
 
   private String createAuthParams() {
@@ -80,13 +87,6 @@ public class AuthService {
       LOGGER.error(me.getMessage());
       throw new TwitchAPIException(URL_ERROR);
     }
-  }
-
-  public boolean validateToken() throws TwitchAPIException {
-    var headers = new HashMap<String, String>();
-    headers.put("Authorization", "OAuth " + twitchToken.getToken());
-    var result = twitchAPI.directRequest(createValidateUrl(), HttpMethod.GET, headers);
-    return false;
   }
 
   private URL createValidateUrl() throws TwitchAPIException {

@@ -4,8 +4,12 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import javax.net.ssl.HttpsURLConnection;
-import net.gecore.streamerendpoints.service.twitch.component.ApiReply;
+import net.gecore.streamerendpoints.service.shared.SharedAPI;
+import net.gecore.streamerendpoints.service.shared.SharedApiException;
+import net.gecore.streamerendpoints.service.shared.component.ApiReply;
 import net.gecore.streamerendpoints.service.twitch.component.RateLimit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -17,6 +21,8 @@ public class TwitchAPI {
 
   private final SharedAPI sAPI;
 
+  private final Logger LOGGER = LoggerFactory.getLogger(TwitchAPI.class);
+
   @Autowired
   public TwitchAPI(RateLimitService ratelimitService, SharedAPI sAPI){
     this.ratelimitService = ratelimitService;
@@ -26,10 +32,15 @@ public class TwitchAPI {
   public String request(URL url, HttpMethod httpMethod, Map<String, String> headers)
       throws TwitchAPIException{
     if(ratelimitService.canPerformRequest()){
-      HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-      ApiReply response = sAPI.readResponse(con);
-      ratelimitService.updateRateLimit(response.getHeaders());
-      return response.getBody();
+      try {
+        HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
+        ApiReply response = sAPI.readResponse(con);
+        ratelimitService.updateRateLimit(response.getHeaders());
+        return response.getBody();
+      }catch(SharedApiException sae){
+        LOGGER.error(sae.getMessage());
+        throw new TwitchAPIException("An error occurred trying to communicate with twitch.");
+      }
     }else{
       Optional<RateLimit> rateLimit = ratelimitService.returnRateLimit();
       if(rateLimit.isPresent()){
@@ -42,7 +53,7 @@ public class TwitchAPI {
   }
 
   public String directRequest(URL url, HttpMethod httpMethod, Map<String, String> headers)
-      throws TwitchAPIException {
+      throws SharedApiException {
     HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
     ApiReply response =  sAPI.readResponse(con);
     return response.getBody();

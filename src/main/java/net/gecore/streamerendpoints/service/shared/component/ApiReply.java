@@ -1,4 +1,4 @@
-package net.gecore.streamerendpoints.service.twitch.component;
+package net.gecore.streamerendpoints.service.shared.component;
 
 import java.util.List;
 import java.util.Map;
