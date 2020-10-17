@@ -17,8 +17,8 @@ import net.gecore.streamerendpoints.processing.QuoteParser;
 @RequestMapping("${rest.api}" + "/quote")
 public class QuotesController {
 
-  private QuoteDao quoteDao;
-  private QuoteParser quoteParser;
+  private final QuoteDao quoteDao;
+  private final QuoteParser quoteParser;
 
   @Autowired
   public QuotesController(QuoteDao quoteDao, QuoteParser quoteParser){
@@ -29,8 +29,7 @@ public class QuotesController {
 
   @GetMapping(value = "")
   public List<Quote> retrieveAllQuotes() {
-    List<Quote> allQuotes = quoteDao.findAll();
-    return allQuotes;
+    return quoteDao.findAll();
   }
 
   @GetMapping(value= "/{quoteId}")

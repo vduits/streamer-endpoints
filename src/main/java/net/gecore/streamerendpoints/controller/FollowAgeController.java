@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("${rest.api}" + "/followage")
+@RequestMapping("${rest.api}" + "/user")
 public class FollowAgeController {
 
-  private UserService userService;
+  private final UserService userService;
 
   @Autowired
-  public FollowAgeController( UserService userService){
+  public FollowAgeController(UserService userService) {
     this.userService = userService;
   }
 
   //todo check if nightbot source is discord/twitch to allow different parsing.
-  @GetMapping(value = "/{firstUser}/following/{secondUser}")
+  @GetMapping(value = "/{firstUser}/followage/{secondUser}")
   public String retrieveAgeById(@PathVariable String firstUser, @PathVariable String secondUser,
-      @RequestHeader(value = "Nightbot-User", required = false) String nightBotData){
-    try{
+      @RequestHeader(value = "Nightbot-User", required = false) String nightBotData) {
+    try {
       return this.userService.retrieveFollowAge(firstUser, secondUser);
-    }catch (TwitchAPIException twe){
+    } catch (TwitchAPIException twe) {
       return twe.getMessage();
     }
   }
