@@ -9,11 +9,11 @@ twitch:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/streamerendpoints
+    url: jdbc:mysql://localhost:3306/streamerendpoints?createDatabaseIfNotExist=true
     username: root
     password: example
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 server:
   port: 8047
