@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import net.gecore.streamerendpoints.service.shared.component.ApiReply;
 import net.gecore.streamerendpoints.service.twitch.TwitchAPIException;
@@ -30,6 +31,34 @@ public class SharedAPI {
             if(!headers.isEmpty()){
                 addHeaders(conn, headers);
             }
+        } catch (ProtocolException pe) {
+            LOGGER.error(pe.getMessage());
+            throw new SharedApiException("Protocol error encountered");
+        } catch (IOException io) {
+            LOGGER.error(io.getMessage());
+            throw new SharedApiException("Connection with twitch got interrupted");
+        }
+        return conn;
+    }
+
+    public HttpsURLConnection buildPOSTConnection(URL url, byte[] body,
+                                                  Map<String, String> headers) throws SharedApiException {
+        HttpsURLConnection conn;
+        try {
+
+            conn = (HttpsURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            conn.setRequestMethod(HttpMethod.POST.name());
+            if(!headers.isEmpty()){
+                addHeaders(conn, headers);
+            }
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "text/plain");
+            var outputStream = conn.getOutputStream();
+            outputStream.write(body);
+            outputStream.close();
+
         } catch (ProtocolException pe) {
             LOGGER.error(pe.getMessage());
             throw new SharedApiException("Protocol error encountered");
