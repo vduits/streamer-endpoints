@@ -39,8 +39,5 @@ public class IGDBAPI {
 
     }
 
-//    public String externalGameID(String body){
-//
-//    }
 
 }
