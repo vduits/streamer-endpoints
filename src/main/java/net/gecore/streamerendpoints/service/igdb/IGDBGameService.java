@@ -1,6 +1,7 @@
 package net.gecore.streamerendpoints.service.igdb;
 
 import net.gecore.streamerendpoints.configuration.TwitchConfig;
+import net.gecore.streamerendpoints.service.igdb.constants.GamesFields;
 import net.gecore.streamerendpoints.service.twitch.AuthService;
 import net.gecore.streamerendpoints.service.twitch.TwitchAPIException;
 import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
@@ -23,7 +24,8 @@ public class IGDBGameService {
     public String retrieveGameById(Integer gameId)
             throws TwitchAPIException, IGDBAPIException {
         URL url = URLHelper.buildIGDBUrl(IGDBEndpoint.games);
-        String body = "fields url,summary; where id = " + gameId + ";";
+        String body = String.format("fields %s,%s; where id = %s;",
+                GamesFields.url, GamesFields.summary, gameId);
         return igdbapi.request(url, authService.provideAuthHeaders(), body);
     }
 
