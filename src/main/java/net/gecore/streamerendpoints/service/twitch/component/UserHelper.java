@@ -8,7 +8,7 @@ import net.gecore.streamerendpoints.domain.TwitchUser;
 
 public class UserHelper {
 
-  public static Optional<TwitchUser> createUserFromTwitchResponse(String response){
+  public static Optional<TwitchUser> createUserFromTwitchResponse(String response) {
     ReadContext ctx = JsonPath.parse(response);
     var user = new TwitchUser();
     try {
@@ -16,7 +16,7 @@ public class UserHelper {
       user.setLogin(ctx.read("$.data[0].login"));
       user.setDisplayName(ctx.read("$.data[0].display_name"));
       return Optional.of(user);
-    } catch (PathNotFoundException pnf){
+    } catch (PathNotFoundException pnf) {
       return Optional.empty();
     }
 

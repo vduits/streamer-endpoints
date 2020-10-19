@@ -1,6 +1,7 @@
 package net.gecore.streamerendpoints.domain;
 
 public class TwitchUser {
+
   private long userId;
   private String login;
   private String displayName;

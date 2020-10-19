@@ -14,26 +14,26 @@ public class FollowAgeUtil {
     DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     LocalDateTime lda = null;
 
-    try{
+    try {
       lda = LocalDateTime.parse(startDate, formatter);
-    }catch (DateTimeParseException dte){
+    } catch (DateTimeParseException dte) {
       System.out.println(dte.getMessage());
     }
-    if(lda != null){
+    if (lda != null) {
       LocalDate oldTime = lda.toLocalDate();
       LocalDate now = LocalDate.now(ZoneOffset.UTC);
       Period p = Period.between(oldTime, now);
-      if(p.getYears()> 0){
+      if (p.getYears() > 0) {
         timeFrame = timeFrame + p.getYears() + " years, ";
       }
-      if(p.getMonths()> 0){
+      if (p.getMonths() > 0) {
         timeFrame = timeFrame + p.getMonths() + " months, ";
       }
-      if(p.getDays()>= 0){
+      if (p.getDays() >= 0) {
         timeFrame = timeFrame + p.getDays() + " days";
       }
       return timeFrame;
-    }else{
+    } else {
       return "something went wrong on the date calculator";
     }
   }

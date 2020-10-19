@@ -7,7 +7,7 @@ public class RateLimit {
   private int remaining;
   private Instant resetTime;
 
-  public RateLimit(int remaining, Instant resetTime){
+  public RateLimit(int remaining, Instant resetTime) {
     this.remaining = remaining;
     this.resetTime = resetTime;
   }

@@ -16,7 +16,7 @@ public class URLHelper {
 
 
   public static URL buildTwitchUrl(TwitchConfig twitchConfig, TwitchEndpoint twitchEndpoint,
-                                   String urlParams) throws TwitchAPIException {
+      String urlParams) throws TwitchAPIException {
     try {
       return new URL(
           "https://api.twitch.tv/"
@@ -31,9 +31,9 @@ public class URLHelper {
   }
 
   public static URL buildIGDBUrl(IGDBEndpoint endpoint) throws IGDBAPIException {
-    try{
+    try {
       return new URL(
-              "https://api.igdb.com/v4/"
+          "https://api.igdb.com/v4/"
               + endpoint
       );
     } catch (MalformedURLException me) {

@@ -57,12 +57,12 @@ public class AuthService {
 
   public void retrieveAuthToken() throws TwitchAPIException {
     URL url = createAuthRequestUrl(createAuthParams());
-    try{
+    try {
       String response = twitchAPI.directRequest(url, HttpMethod.POST, NO_HEADERS);
       String token = JsonPathUtils.retrieveString(response, "$.access_token");
       int expiry = JsonPathUtils.retrieveInt(response, "$.expires_in");
       this.twitchToken = new TwitchToken(token, expiry);
-    }catch(SharedApiException sae){
+    } catch (SharedApiException sae) {
       LOGGER.error(sae.getMessage());
       throw new TwitchAPIException("An issue has risen when trying to authenticate with twitch");
     }

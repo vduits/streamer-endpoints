@@ -8,7 +8,7 @@ import net.gecore.streamerendpoints.domain.TwitchStream;
 
 public class StreamHelper {
 
-  public static Optional<TwitchStream> createStreamFromTwitchResponse(String response){
+  public static Optional<TwitchStream> createStreamFromTwitchResponse(String response) {
     ReadContext ctx = JsonPath.parse(response);
     var stream = new TwitchStream();
     try {
@@ -16,7 +16,7 @@ public class StreamHelper {
       stream.setTitle(ctx.read("$.data[0].title"));
       stream.setTagIds(ctx.read("$.data[0].tag_ids.*"));
       return Optional.of(stream);
-    } catch(PathNotFoundException pnf){
+    } catch (PathNotFoundException pnf) {
       return Optional.empty();
     }
   }

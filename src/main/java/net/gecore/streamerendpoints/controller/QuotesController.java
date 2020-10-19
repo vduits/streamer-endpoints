@@ -21,7 +21,7 @@ public class QuotesController {
   private final QuoteParser quoteParser;
 
   @Autowired
-  public QuotesController(QuoteDao quoteDao, QuoteParser quoteParser){
+  public QuotesController(QuoteDao quoteDao, QuoteParser quoteParser) {
     this.quoteDao = quoteDao;
     this.quoteParser = quoteParser;
   }
@@ -32,26 +32,26 @@ public class QuotesController {
     return quoteDao.findAll();
   }
 
-  @GetMapping(value= "/{quoteId}")
-  public Quote retrieveCompleteQuote(@PathVariable Integer quoteId){
+  @GetMapping(value = "/{quoteId}")
+  public Quote retrieveCompleteQuote(@PathVariable Integer quoteId) {
     return quoteDao.retrieveQuoteById(quoteId);
   }
 
-  @GetMapping(value= "/{quoteId}/quote")
-  public String retrieveQuote(@PathVariable Integer quoteId){
+  @GetMapping(value = "/{quoteId}/quote")
+  public String retrieveQuote(@PathVariable Integer quoteId) {
     Quote retrievedQuote = quoteDao.retrieveQuoteById(quoteId);
-    if(Objects.nonNull(retrievedQuote)) {
+    if (Objects.nonNull(retrievedQuote)) {
       return quoteParser
           .unEscapeImportantShit(retrievedQuote.getId() + ": " + retrievedQuote.getQuote());
-    }else{
+    } else {
       return "quote does not exist (anymore)";
     }
   }
 
-  @GetMapping(value= "/random")
-  public String retrieveRandomQuote(){
+  @GetMapping(value = "/random")
+  public String retrieveRandomQuote() {
     Random random = new Random();
-    int quoteId = random.nextInt( quoteDao.getMaxId() + 1 - 1) + 1;
+    int quoteId = random.nextInt(quoteDao.getMaxId() + 1 - 1) + 1;
     return retrieveQuote(quoteId);
   }
 

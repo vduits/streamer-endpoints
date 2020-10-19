@@ -10,8 +10,7 @@ import net.gecore.streamerendpoints.repostories.QuoteRepository;
 @Component
 public class QuoteDao {
 
-  private QuoteRepository quoteRepository;
-
+  private final QuoteRepository quoteRepository;
 
   @Autowired
   public QuoteDao(QuoteRepository quoteRepository){

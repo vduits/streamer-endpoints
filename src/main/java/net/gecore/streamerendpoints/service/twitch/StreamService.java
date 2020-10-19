@@ -18,63 +18,63 @@ import java.util.Optional;
 @Component
 public class StreamService {
 
-    private final TwitchAPI twitchAPI;
-    private final TwitchConfig twitchConfig;
-    private final AuthService authService;
-    private final TwitchGameService twitchGameService;
-    private final Logger LOGGER = LoggerFactory.getLogger(StreamService.class);
+  private final TwitchAPI twitchAPI;
+  private final TwitchConfig twitchConfig;
+  private final AuthService authService;
+  private final TwitchGameService twitchGameService;
+  private final Logger LOGGER = LoggerFactory.getLogger(StreamService.class);
 
-    public StreamService(TwitchAPI twitchAPI, AuthService authService,
-                        TwitchGameService twitchGameService, TwitchConfig twitchConfig) {
-        this.twitchAPI = twitchAPI;
-        this.authService = authService;
-        this.twitchGameService = twitchGameService;
-        this.twitchConfig = twitchConfig;
+  public StreamService(TwitchAPI twitchAPI, AuthService authService,
+      TwitchGameService twitchGameService, TwitchConfig twitchConfig) {
+    this.twitchAPI = twitchAPI;
+    this.authService = authService;
+    this.twitchGameService = twitchGameService;
+    this.twitchConfig = twitchConfig;
+  }
+
+  public TwitchGame retrieveCurrentPlayingGameByUserId(long userId) throws TwitchAPIException {
+    ReadContext streamContext = JsonPath.parse(retrieveStreamByUserId(userId));
+    Optional<Long> gameId = retrieveGameIdFromStream(streamContext);
+
+    if (gameId.isPresent()) {
+      return twitchGameService.retrieveGameById(gameId.get());
     }
 
-    public TwitchGame retrieveCurrentPlayingGameByUserId(long userId) throws TwitchAPIException {
-        ReadContext streamContext = JsonPath.parse(retrieveStreamByUserId(userId));
-        Optional<Long> gameId = retrieveGameIdFromStream(streamContext);
+    throw new TwitchAPIException("The user is currently not streaming.");
+  }
 
-        if(gameId.isPresent()) {
-            return twitchGameService.retrieveGameById(gameId.get());
-        }
+  public String retrieveStreamByUserId(long userId) throws TwitchAPIException {
+    final String urlParams = "?user_id=" + userId;
+    URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.streams, urlParams);
 
-        throw new TwitchAPIException("The user is currently not streaming.");
+    return twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
+  }
+
+  /**
+   * Extract Game Id from current stream context
+   *
+   * @param streamContext Current stream
+   * @return Optional Game Id, Could be empty if the user is not streaming
+   */
+  private Optional<Long> retrieveGameIdFromStream(ReadContext streamContext) {
+    final String node = "$.data[0].game_id";
+
+    if (isUserStreaming(streamContext)) {
+      return Optional.of(Long.parseLong(streamContext.read(node)));
     }
 
-    public String retrieveStreamByUserId(long userId) throws TwitchAPIException {
-        final String urlParams = "?user_id=" + userId;
-        URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.streams, urlParams);
+    return Optional.empty();
+  }
 
-        return twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
-    }
-
-    /**
-     * Extract Game Id from current stream context
-     *
-     * @param streamContext Current stream
-     * @return Optional Game Id, Could be empty if the user is not streaming
-     */
-    private Optional<Long> retrieveGameIdFromStream(ReadContext streamContext) {
-        final String node = "$.data[0].game_id";
-
-        if(isUserStreaming(streamContext)) {
-            return Optional.of(Long.parseLong(streamContext.read(node)));
-        }
-
-        return Optional.empty();
-    }
-
-    /**
-     * Checking Twitch API Response for filled data array
-     *
-     * @param streamContext Twitch Api Response from /streams api point
-     * @return boolean
-     */
-    private boolean isUserStreaming(ReadContext streamContext)  {
-        JSONArray arr = streamContext.read("$.data");
-        return !arr.isEmpty();
-    }
+  /**
+   * Checking Twitch API Response for filled data array
+   *
+   * @param streamContext Twitch Api Response from /streams api point
+   * @return boolean
+   */
+  private boolean isUserStreaming(ReadContext streamContext) {
+    JSONArray arr = streamContext.read("$.data");
+    return !arr.isEmpty();
+  }
 
 }

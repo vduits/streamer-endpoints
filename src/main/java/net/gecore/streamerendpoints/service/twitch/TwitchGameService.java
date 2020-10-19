@@ -15,27 +15,29 @@ import java.net.URL;
 
 @Component
 public class TwitchGameService {
-    private final TwitchAPI twitchAPI;
-    private final TwitchConfig twitchConfig;
-    private final AuthService authService;
-    private final Logger LOGGER = LoggerFactory.getLogger(StreamService.class);
 
-    public TwitchGameService(TwitchAPI twitchAPI, AuthService authService, TwitchConfig twitchConfig) {
-        this.twitchAPI = twitchAPI;
-        this.authService = authService;
-        this.twitchConfig = twitchConfig;
-    }
+  private final TwitchAPI twitchAPI;
+  private final TwitchConfig twitchConfig;
+  private final AuthService authService;
+  private final Logger LOGGER = LoggerFactory.getLogger(StreamService.class);
 
-    public TwitchGame retrieveGameById(long gameId) throws TwitchAPIException {
-        URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.games, "?id=" + gameId);
-        String response = twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
-        Optional<TwitchGame> parsedGame = GameHelper.createGameFromTwitchResponse(response);
-        if(parsedGame.isPresent()){
-            return parsedGame.get();
-        }else{
-            LOGGER.error("Could not find game at twitch using id: {}", gameId);
-            throw new TwitchAPIException("Could not find the game the streamer is playing");
-        }
+  public TwitchGameService(TwitchAPI twitchAPI, AuthService authService,
+      TwitchConfig twitchConfig) {
+    this.twitchAPI = twitchAPI;
+    this.authService = authService;
+    this.twitchConfig = twitchConfig;
+  }
+
+  public TwitchGame retrieveGameById(long gameId) throws TwitchAPIException {
+    URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.games, "?id=" + gameId);
+    String response = twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
+    Optional<TwitchGame> parsedGame = GameHelper.createGameFromTwitchResponse(response);
+    if (parsedGame.isPresent()) {
+      return parsedGame.get();
+    } else {
+      LOGGER.error("Could not find game at twitch using id: {}", gameId);
+      throw new TwitchAPIException("Could not find the game the streamer is playing");
     }
+  }
 
 }

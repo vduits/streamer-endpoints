@@ -24,29 +24,30 @@ public class TwitchAPI {
   private final Logger LOGGER = LoggerFactory.getLogger(TwitchAPI.class);
 
   @Autowired
-  public TwitchAPI(RateLimitService ratelimitService, SharedAPI sAPI){
+  public TwitchAPI(RateLimitService ratelimitService, SharedAPI sAPI) {
     this.ratelimitService = ratelimitService;
     this.sAPI = sAPI;
   }
 
   public String request(URL url, HttpMethod httpMethod, Map<String, String> headers)
-      throws TwitchAPIException{
-    if(ratelimitService.canPerformRequest()){
+      throws TwitchAPIException {
+    if (ratelimitService.canPerformRequest()) {
       try {
         HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
         ApiReply response = sAPI.readResponse(con);
         ratelimitService.updateRateLimit(response.getHeaders());
         return response.getBody();
-      }catch(SharedApiException sae){
+      } catch (SharedApiException sae) {
         LOGGER.error(sae.getMessage());
+        LOGGER.error("test");
         throw new TwitchAPIException("An error occurred trying to communicate with twitch.");
       }
-    }else{
+    } else {
       Optional<RateLimit> rateLimit = ratelimitService.returnRateLimit();
-      if(rateLimit.isPresent()){
-        throw new TwitchAPIException("rate limit reached please wait until"+
+      if (rateLimit.isPresent()) {
+        throw new TwitchAPIException("rate limit reached please wait until" +
             rateLimit.get().getResetTime());
-      }else{
+      } else {
         throw new TwitchAPIException("rate limit reached, but unknown. Please wait a minute.");
       }
     }
@@ -55,7 +56,7 @@ public class TwitchAPI {
   public String directRequest(URL url, HttpMethod httpMethod, Map<String, String> headers)
       throws SharedApiException {
     HttpsURLConnection con = sAPI.buildConnection(url, httpMethod, headers);
-    ApiReply response =  sAPI.readResponse(con);
+    ApiReply response = sAPI.readResponse(con);
     return response.getBody();
   }
 
