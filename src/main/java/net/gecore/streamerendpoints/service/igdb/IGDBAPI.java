@@ -1,5 +1,7 @@
 package net.gecore.streamerendpoints.service.igdb;
 
+import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
 import net.gecore.streamerendpoints.service.shared.SharedAPI;
 import net.gecore.streamerendpoints.service.shared.SharedApiException;
 import net.gecore.streamerendpoints.service.shared.component.ApiReply;
@@ -8,10 +10,6 @@ import net.gecore.streamerendpoints.service.twitch.AuthService;
 import net.gecore.streamerendpoints.service.twitch.TwitchAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.net.URL;
-import java.util.Map;
 
 public class IGDBAPI {
 
