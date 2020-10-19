@@ -1,12 +1,11 @@
 package net.gecore.streamerendpoints.service.twitch;
 
 import java.net.URL;
-import java.util.Objects;
+
 import net.gecore.streamerendpoints.configuration.TwitchConfig;
-import net.gecore.streamerendpoints.service.twitch.component.URLHelper;
+import net.gecore.streamerendpoints.service.utils.URLHelper;
 import net.gecore.streamerendpoints.service.twitch.component.UserHelper;
 import net.gecore.streamerendpoints.service.twitch.constants.TwitchEndpoint;
-import net.gecore.streamerendpoints.service.utils.BasicUtils;
 import net.gecore.streamerendpoints.service.utils.FollowAgeUtil;
 import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
 import org.slf4j.Logger;
@@ -50,13 +49,13 @@ public class UserService {
   }
 
   public String retrieveUserIdFromName(String userName) throws TwitchAPIException {
-    URL url = URLHelper.buildUrl(twitchConfig, TwitchEndpoint.users, "?login=" + userName);
+    URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.users, "?login=" + userName);
     return twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
   }
 
   public String requestFollowAge(long followerId, long streamerId) throws TwitchAPIException {
     String urlBuildUp = "/follows?" + "to_id=" + streamerId + "&" + "from_id=" + followerId;
-    URL url = URLHelper.buildUrl(twitchConfig, TwitchEndpoint.users, urlBuildUp);
+    URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.users, urlBuildUp);
     String response = twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
     return JsonPathUtils.retrieveString(response, "$.data[0].followed_at");
   }

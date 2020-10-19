@@ -4,7 +4,7 @@ import java.util.Optional;
 import net.gecore.streamerendpoints.configuration.TwitchConfig;
 import net.gecore.streamerendpoints.domain.TwitchGame;
 import net.gecore.streamerendpoints.service.twitch.component.GameHelper;
-import net.gecore.streamerendpoints.service.twitch.component.URLHelper;
+import net.gecore.streamerendpoints.service.utils.URLHelper;
 import net.gecore.streamerendpoints.service.twitch.constants.TwitchEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class TwitchGameService {
     }
 
     public TwitchGame retrieveGameById(long gameId) throws TwitchAPIException {
-        URL url = URLHelper.buildUrl(twitchConfig, TwitchEndpoint.games, "?id=" + gameId);
+        URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.games, "?id=" + gameId);
         String response = twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
         Optional<TwitchGame> parsedGame = GameHelper.createGameFromTwitchResponse(response);
         if(parsedGame.isPresent()){

@@ -1,13 +1,11 @@
 package net.gecore.streamerendpoints.service.twitch;
 
 import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.ReadContext;
 import net.gecore.streamerendpoints.configuration.TwitchConfig;
 import net.gecore.streamerendpoints.domain.TwitchGame;
-import net.gecore.streamerendpoints.service.twitch.component.URLHelper;
+import net.gecore.streamerendpoints.service.utils.URLHelper;
 import net.gecore.streamerendpoints.service.twitch.constants.TwitchEndpoint;
-import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
 import net.minidev.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +45,7 @@ public class StreamService {
 
     public String retrieveStreamByUserId(long userId) throws TwitchAPIException {
         final String urlParams = "?user_id=" + userId;
-        URL url = URLHelper.buildUrl(twitchConfig, TwitchEndpoint.streams, urlParams);
+        URL url = URLHelper.buildTwitchUrl(twitchConfig, TwitchEndpoint.streams, urlParams);
 
         return twitchAPI.request(url, HttpMethod.GET, authService.provideAuthHeaders());
     }
