@@ -33,7 +33,8 @@ public class IGDBController {
             throws TwitchAPIException, IGDBAPIException {
 
         TwitchGame twitchGame = streamService.retrieveCurrentPlayingGameByUserId(userId);
-        Integer exReply = igdbGameService.retrieveIdByExternalGame(twitchGame.getId());
+        String twitchGameString = Integer.toString((int) twitchGame.getId());
+        Integer exReply = igdbGameService.retrieveIdByExternalGame(twitchGameString);
         return igdbGameService.retrieveGameById(exReply);
     }
 
