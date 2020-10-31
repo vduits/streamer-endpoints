@@ -21,7 +21,7 @@ public class IGDBGameService {
     URL url = URLHelper.buildIGDBUrl(IGDBEndpoint.games);
     IGDBQuery query = new IGDBQuery()
         .fields(GamesField.url, GamesField.summary)
-        .where(GamesField.id, Integer.toString(gameId));
+        .where(GamesField.id, gameId);
     return igdbapi.request(url, query.build());
   }
 
