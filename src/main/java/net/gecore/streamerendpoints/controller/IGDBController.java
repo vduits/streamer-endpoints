@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("${rest.api}" + "/user/{userId}/stream/game")
+@RequestMapping("${rest.api}" + "/user")
 public class IGDBController {
 
     private final IGDBGameService igdbGameService;
@@ -29,7 +29,7 @@ public class IGDBController {
 
     @GetMapping(value = "/{userId}/stream/game")
     public String retrieveGameInfo(@PathVariable Integer userId,
-        @RequestParam(value = "summary,url", required = false) List<String> filters)
+        @RequestParam(required = false) List<String> filters)
             throws TwitchAPIException, IGDBAPIException {
 
         TwitchGame twitchGame = streamService.retrieveCurrentPlayingGameByUserId(userId);
