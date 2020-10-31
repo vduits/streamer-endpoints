@@ -28,12 +28,11 @@ public class IGDBController {
     }
 
     @GetMapping(value = "/{userId}/stream/game")
-    public String retrieveGameInfo(@PathVariable Integer userId,
-        @RequestParam(required = false) List<String> filters)
+    public String retrieveGameInfo(@PathVariable Integer userId)
             throws TwitchAPIException, IGDBAPIException {
 
         TwitchGame twitchGame = streamService.retrieveCurrentPlayingGameByUserId(userId);
-        String twitchGameString = Integer.toString((int) twitchGame.getId());
+        String twitchGameString = Long.toString(twitchGame.getId());
         Integer exReply = igdbGameService.retrieveIdByExternalGame(twitchGameString);
         return igdbGameService.retrieveGameById(exReply);
     }
