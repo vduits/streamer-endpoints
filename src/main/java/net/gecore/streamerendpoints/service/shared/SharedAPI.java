@@ -1,5 +1,6 @@
 package net.gecore.streamerendpoints.service.shared;
 
+import java.io.InputStream;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +46,6 @@ public class SharedAPI {
       Map<String, String> headers) throws SharedApiException {
     HttpsURLConnection conn;
     try {
-
       conn = (HttpsURLConnection) url.openConnection();
       conn.setConnectTimeout(5000);
       conn.setReadTimeout(5000);
@@ -58,6 +58,7 @@ public class SharedAPI {
       var outputStream = conn.getOutputStream();
       outputStream.write(body);
       outputStream.close();
+      System.out.println(conn.getResponseCode());
 
     } catch (ProtocolException pe) {
       LOGGER.error(pe.getMessage());
@@ -76,19 +77,36 @@ public class SharedAPI {
   }
 
   public ApiReply readResponse(HttpsURLConnection con) {
-    StringBuilder content = new StringBuilder();
+    String response = "";
     try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+      var responseInput = con.getInputStream();
+      response = buildResponse(responseInput);
+    } catch (IOException e) {
+      var errorInput = con.getErrorStream();
+      try {
+        response = buildResponse(errorInput);
+        LOGGER.error(response);
+      } catch (IOException ioException) {
+        ioException.printStackTrace();
+      }
+    }
+    con.disconnect();
+    if(response.isBlank()){
+      return new ApiReply(con.getHeaderFields(), "No response could be created");
+    }else{
+      return new ApiReply(con.getHeaderFields(), response);
+    }
+  }
 
+  public String buildResponse(InputStream stream) throws IOException {
+    StringBuilder content = new StringBuilder();
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
       String input;
       while ((input = br.readLine()) != null) {
         content.append(input);
       }
-      br.close();
-    } catch (IOException e) {
-      e.printStackTrace();
     }
-    con.disconnect();
-    return new ApiReply(con.getHeaderFields(), content);
+    return content.toString();
   }
+
 }

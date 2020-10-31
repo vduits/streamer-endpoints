@@ -7,9 +7,9 @@ public class ApiReply {
 
   private final Map<String, List<String>> headers;
 
-  private final StringBuilder body;
+  private final String body;
 
-  public ApiReply(Map<String, List<String>> headers, StringBuilder body) {
+  public ApiReply(Map<String, List<String>> headers, String body) {
     this.headers = headers;
     this.body = body;
   }
@@ -19,7 +19,7 @@ public class ApiReply {
   }
 
   public String getBody() {
-    return body.toString();
+    return body;
   }
 
 }
