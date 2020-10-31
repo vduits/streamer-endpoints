@@ -10,7 +10,9 @@ import net.gecore.streamerendpoints.service.twitch.AuthService;
 import net.gecore.streamerendpoints.service.twitch.TwitchAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class IGDBAPI {
 
   private final SharedAPI sAPI;
