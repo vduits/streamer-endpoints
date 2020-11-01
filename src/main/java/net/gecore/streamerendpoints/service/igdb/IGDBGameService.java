@@ -8,7 +8,9 @@ import net.gecore.streamerendpoints.service.igdb.constants.IGDBEndpoint;
 import net.gecore.streamerendpoints.service.igdb.helper.IGDBQuery;
 import net.gecore.streamerendpoints.service.utils.JsonPathUtils;
 import net.gecore.streamerendpoints.service.utils.URLHelper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class IGDBGameService {
 
   private final IGDBAPI igdbapi;
